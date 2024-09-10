@@ -28,11 +28,7 @@ export const TinderCardLayout = (props: TinderCardLayoutProps) => {
   //   };
 
   return (
-    <TinderCard
-      onSwipe={onSwipe}
-      //   onCardLeftScreen={() => onCardLeftScreen("fooBar")}
-      preventSwipe={["down"]}
-    >
+    <TinderCard onSwipe={onSwipe} preventSwipe={["down"]}>
       <div className="bg-white w-fit text-black p-10 cursor-drag active:cursor-dragging">
         Hello, World!
       </div>
