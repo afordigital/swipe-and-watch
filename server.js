@@ -11,12 +11,15 @@ const handler = app.getRequestHandler();
 
 const SWIPE_AND_WATCH_ROOMS = {};
 
+const movies = await fetchMovies();
+
 app.prepare().then(() => {
   const httpServer = createServer(handler);
 
   const io = new Server(httpServer);
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
+    
     socket.on("join", (data) => {
       const { room, userId } = data;
 
@@ -35,6 +38,9 @@ app.prepare().then(() => {
         }
       }
 
+      socket.emit("room", {  userId, movies, room: SWIPE_AND_WATCH_ROOMS[room] });
+
+
     });
 
     socket.on("swipe", (data) => {
@@ -51,3 +57,14 @@ app.prepare().then(() => {
       console.log(`> Ready on http://${hostname}:${port}`);
     });
 });
+
+async function fetchMovies () { 
+    const response = await fetch(
+      "https://api.themoviedb.org/3/movie/popular?api_key=cd7ab32ae03fba9539c7c1b601c50486"
+    );
+    // const response = await fetch(
+    //   `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.NEXT_PUBLIC_MOVIES_API_TOKEN}`
+    // );
+    const data = await response.json();
+    return data.results
+}

@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "@/socket";
 import { TinderCardLayout } from "@/components/TinderCardLayout";
+import fetchMovies from "@/api/moviesApi";
 
 const page = ({ params }: { params: { room: string } }) => {
+  // const { data, isLoading, error } = fetchMovies();
+
   const room = params.room;
   const userId = crypto.randomUUID();
+  // const [currentMovieId, setCurrentMovieId] = useState(0);
+  // const currentMovie = data ? data[currentMovieId] : {};
 
   useEffect(() => {
     socket.connect().emit("join", { room, userId });
@@ -14,6 +19,12 @@ const page = ({ params }: { params: { room: string } }) => {
     return () => {
       socket.disconnect().emit("leave", { room, userId });
     };
+  }, []);
+
+  useEffect(() => {
+    socket.on("room", (data) => {
+      console.log(data);
+    });
   }, []);
 
   const onSwipeLeft = () => {
@@ -28,18 +39,23 @@ const page = ({ params }: { params: { room: string } }) => {
 
   return (
     <>
-      {!socket ? (
-        <p>Loading...</p>
-      ) : (
+      HOla
+      {/* {!socket || (isLoading && <p>Loading...</p>)}
+      {error && <p>Errores...</p>}
+      {socket && (
         <>
           <h1>Hola, estás en la sala {params.room}</h1>
-          <TinderCardLayout
-            onSwipeLeft={onSwipeLeft}
-            onSwipeRight={onSwipeRight}
-            onSwipeUp={onSwipeUp}
-          />
+          <main className="flex items-center justify-center h-screen">
+            <TinderCardLayout
+              movies={data}
+              currentMovie={currentMovie}
+              onSwipeLeft={onSwipeLeft}
+              onSwipeRight={onSwipeRight}
+              onSwipeUp={onSwipeUp}
+            />
+          </main>
         </>
-      )}
+      )} */}
     </>
   );
 };
