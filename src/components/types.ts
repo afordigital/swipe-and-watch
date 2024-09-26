@@ -1,3 +1,21 @@
+export type Room = {
+  users: string[];
+  currentMovie: Movie[`id`];
+  votes: Record<string, UserVote[]>;
+};
+
+export type UserVote = {
+  userId: string;
+  vote: string;
+};
+
+export const VOTES = {
+  LIKE: "like",
+  SUPERLIKE: "superlike",
+  DISLIKE: "dislike",
+} as const;
+type Vote = (typeof VOTES)[keyof typeof VOTES];
+
 export type Movie = {
   adult: boolean;
   backdrop_path: string;

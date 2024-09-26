@@ -17,7 +17,7 @@ import { Movie } from "./types";
 
 type TinderCardLayoutProps = {
   movies: Movie[];
-  currentMovie: number;
+  currentMovie: Movie;
   onSwipeLeft: () => void;
   onSwipeRight: () => void;
   onSwipeUp: () => void;

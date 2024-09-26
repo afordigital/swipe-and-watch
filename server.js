@@ -9,7 +9,7 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
-const SWIPE_AND_WATCH_ROOMS = {};
+let SWIPE_AND_WATCH_ROOMS = {};
 
 const movies = await fetchMovies();
 
@@ -19,7 +19,6 @@ app.prepare().then(() => {
   const io = new Server(httpServer);
 
   io.on("connection", async (socket) => {
-    
     socket.on("join", (data) => {
       const { room, userId } = data;
 
@@ -27,24 +26,68 @@ app.prepare().then(() => {
       if (!selectedRoom) {
         SWIPE_AND_WATCH_ROOMS = {
           ...SWIPE_AND_WATCH_ROOMS,
-          [room]: { users: [userId] },
+          [room]: { users: [userId], currentMovie: movies[0].id, votes: {} }, // Inicializamos la room
         };
       } else {
         if (selectedRoom.users.length === 2) return;
-        
-        SWIPE_AND_WATCH_ROOMS[room] = {
-          ...SWIPE_AND_WATCH_ROOMS[room], users:
-          [...users, userId]
-        }
+
+        SWIPE_AND_WATCH_ROOMS = {
+          ...SWIPE_AND_WATCH_ROOMS,
+          [room]: { ...selectedRoom, users: [...selectedRoom.users, userId] },
+        };
       }
 
-      socket.emit("room", {  userId, movies, room: SWIPE_AND_WATCH_ROOMS[room] });
-
-
+      socket.emit("room", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
     });
 
-    socket.on("swipe", (data) => {
-      console.log(data);
+    socket.on("swipe", ({ room, userId, currentMovieId, vote }) => {
+      const currentRoom = SWIPE_AND_WATCH_ROOMS[room];
+
+      if (!currentRoom) return;
+
+      const movieVotes = currentRoom.votes[currentMovieId] || [];
+
+      const existingVoteIndex = movieVotes.findIndex(
+        (v) => v.userId === userId
+      );
+
+      if (existingVoteIndex > -1) {
+        movieVotes[existingVoteIndex].vote = vote;
+      } else {
+        movieVotes.push({ userId, vote });
+      }
+
+      SWIPE_AND_WATCH_ROOMS = {
+        ...SWIPE_AND_WATCH_ROOMS,
+        [room]: {
+          ...currentRoom,
+          votes: {
+            ...currentRoom.votes,
+            [currentMovieId]: movieVotes,
+          },
+        },
+      };
+
+      console.log(`Votos para la película ${currentMovieId}:`, movieVotes);
+    });
+
+    socket.on("next", ({ room }) => {
+      const currentRoom = SWIPE_AND_WATCH_ROOMS[room];
+
+      if (!currentRoom) return;
+      const currentMovieIndex = movies.findIndex(
+        (movie) => movie.id === currentRoom.currentMovie
+      );
+
+      if (currentMovieIndex === -1) return;
+      SWIPE_AND_WATCH_ROOMS = {
+        ...SWIPE_AND_WATCH_ROOMS,
+        [room]: {
+          ...currentRoom,
+          currentMovie: movies[currentMovieIndex + 1].id,
+        },
+      };
+      socket.emit("room", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
     });
   });
 
@@ -58,13 +101,17 @@ app.prepare().then(() => {
     });
 });
 
-async function fetchMovies () { 
-    const response = await fetch(
-      "https://api.themoviedb.org/3/movie/popular?api_key=cd7ab32ae03fba9539c7c1b601c50486"
-    );
-    // const response = await fetch(
-    //   `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.NEXT_PUBLIC_MOVIES_API_TOKEN}`
-    // );
-    const data = await response.json();
-    return data.results
+async function fetchMovies() {
+  const response = await Promise.all(
+    [...Array(5).keys()].map((i) =>
+      fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=cd7ab32ae03fba9539c7c1b601c50486&include_adult=false&page=${
+          i + 1
+        }`
+      ).then((res) => res.json())
+    )
+  );
+
+  const data = response.flatMap((res) => res.results);
+  return data;
 }
