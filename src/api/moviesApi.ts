@@ -9,7 +9,6 @@ const fetchMovies = async () => {
     );
     const dataResponse = await response.json();
     data = dataResponse.results;
-    console.log(data);
   } catch (err) {
     error =
       err instanceof Error ? err : new Error("Se produjo un error desconocido");

@@ -22,6 +22,8 @@ app.prepare().then(() => {
     socket.on("join", (data) => {
       const { room, userId } = data;
 
+      console.log(room);
+
       const selectedRoom = SWIPE_AND_WATCH_ROOMS[room];
       if (!selectedRoom) {
         SWIPE_AND_WATCH_ROOMS = {
@@ -29,13 +31,15 @@ app.prepare().then(() => {
           [room]: { users: [userId], currentMovie: movies[0].id, votes: {} }, // Inicializamos la room
         };
       } else {
-        if (selectedRoom.users.length === 2) return;
+        if (selectedRoom.users.length === 200000) return; //cambiar a 2 de nuevo
 
         SWIPE_AND_WATCH_ROOMS = {
           ...SWIPE_AND_WATCH_ROOMS,
           [room]: { ...selectedRoom, users: [...selectedRoom.users, userId] },
         };
       }
+
+      console.log("room ", room);
 
       socket.emit("room", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
     });
@@ -69,6 +73,24 @@ app.prepare().then(() => {
       };
 
       console.log(`Votos para la película ${currentMovieId}:`, movieVotes);
+
+      // avanzar solo si es el segundo voto
+
+      if (movieVotes > 1) {
+        const currentMovieIndex = movies.findIndex(
+          (movie) => movie.id === currentRoom.currentMovie
+        );
+
+        if (currentMovieIndex === -1) return;
+        SWIPE_AND_WATCH_ROOMS = {
+          ...SWIPE_AND_WATCH_ROOMS,
+          [room]: {
+            ...currentRoom,
+            currentMovie: movies[currentMovieIndex + 1].id,
+          },
+        };
+      }
+      socket.emit("room", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
     });
 
     socket.on("next", ({ room }) => {
@@ -105,7 +127,7 @@ async function fetchMovies() {
   const response = await Promise.all(
     [...Array(5).keys()].map((i) =>
       fetch(
-        `https://api.themoviedb.org/3/movie/popular?api_key=cd7ab32ae03fba9539c7c1b601c50486&include_adult=false&page=${
+        `https://api.themoviedb.org/3/movie/popular?api_key=86f5f3f73bd8480c9ce28e46c1de3b32&include_adult=false&page=${
           i + 1
         }`
       ).then((res) => res.json())

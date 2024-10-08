@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { socket } from "@/socket";
 import { TinderCardLayout } from "@/components/TinderCardLayout";
 import { Movie, Room, VOTES } from "@/components/types";
+import { Footer } from "@/components/Footer";
 
 const page = ({ params }: { params: { room: string } }) => {
   const roomId = params.room;
@@ -37,34 +38,27 @@ const page = ({ params }: { params: { room: string } }) => {
   }, []);
 
   const vote = (vote: string) => {
-    console.log(vote);
     socket.emit("swipe", { room: roomId, userId, currentMovieId, vote });
   };
 
+  console.log(status);
+
   return (
-    <>
+    <main className="text-black">
       {isLoading && <p>Loading...</p>}
-      {!isLoading && currentMovie && (
-        <>
-          <h1>Hola, estás en la sala {params.room}</h1>
-          <main className="flex items-center justify-center h-screen">
-            <TinderCardLayout
-              movies={movies}
-              currentMovie={currentMovie}
-              onSwipeLeft={() => {
-                vote(VOTES.DISLIKE);
-              }}
-              onSwipeRight={() => {
-                vote(VOTES.LIKE);
-              }}
-              onSwipeUp={() => {
-                vote(VOTES.SUPERLIKE);
-              }}
-            />
-          </main>
-        </>
+      {status === "WAITING" && <p>Waiting to the other person to vote...</p>}
+      {!isLoading && currentMovie && status === "VOTING" && (
+        <section className="flex flex-col w-screen items-center justify-center min-h-screen p-8 pb-20 gap-[44px] sm:p-20">
+          <h1 className="text-[48px] font-extrabold">
+            Find the best movie match
+          </h1>
+          <article className="flex items-center justify-center h-full">
+            <TinderCardLayout currentMovie={currentMovie} vote={vote} />
+          </article>
+          <Footer />
+        </section>
       )}
-    </>
+    </main>
   );
 };
 
@@ -80,7 +74,7 @@ type RoomStatus =
 const getStatus = (room: Room | null, currentUserId: string): RoomStatus => {
   if (!room) return "WAITING";
   const votes = room.votes[room.currentMovie];
-  if (!votes) return "WAITING";
+  if (!votes) return "VOTING";
   if (votes.length === 0) return "VOTING";
   if (votes.length === 1) {
     const vote = votes[0];
@@ -91,6 +85,14 @@ const getStatus = (room: Room | null, currentUserId: string): RoomStatus => {
     const [firstVote, secondVote] = votes;
 
     if (firstVote.vote === secondVote.vote) {
+      if (
+        firstVote.vote === VOTES.DISLIKE &&
+        secondVote.vote === VOTES.DISLIKE
+      ) {
+        socket.emit("next", { room: room });
+        return "VOTING";
+        //llamar a next
+      }
       if ((firstVote.vote || secondVote.vote) === VOTES.SUPERLIKE)
         return "SUPERMATCHED";
       return "MATCHED";
