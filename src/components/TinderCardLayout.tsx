@@ -1,114 +1,109 @@
 "use client";
 import TinderCard from "react-tinder-card";
-import { DIRECTION } from "../constants";
-import { ThumbsDown, ThumbsUp, Star } from "lucide-react";
+import { Star, HeartOff, CheckCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Movie } from "./types";
+import { Movie, Vote, VOTES } from "./types";
+import { Direction } from "@/constants";
 
 type TinderCardLayoutProps = {
-  movies: Movie[];
   currentMovie: Movie;
-  onSwipeLeft: () => void;
-  onSwipeRight: () => void;
-  onSwipeUp: () => void;
+  vote: (vote: Vote) => void;
 };
 
-export const TinderCardLayout = (props: TinderCardLayoutProps) => {
-  const onSwipe = (direction: string) => {
-    switch (direction) {
-      case DIRECTION.LEFT:
-        props.onSwipeLeft();
+export const TinderCardLayout = ({
+  currentMovie,
+  vote,
+}: TinderCardLayoutProps) => {
+  const handleVote = (mode: Direction) => {
+    switch (mode) {
+      case "up":
+        vote(VOTES.SUPERLIKE);
         break;
-      case DIRECTION.RIGHT:
-        props.onSwipeRight();
+      case "left":
+        vote(VOTES.DISLIKE);
         break;
-      case DIRECTION.UP:
-        props.onSwipeUp();
+      case "right":
+        vote(VOTES.LIKE);
         break;
     }
   };
 
   return (
-    <TinderCard onSwipe={onSwipe} preventSwipe={["down"]}>
-      <div className="cursor-grab active:cursor-grabbing">
+    <TinderCard onSwipe={(mode) => handleVote(mode)} preventSwipe={["down"]}>
+      <div className="cursor-grab active:cursor-grabbing text-[14px]">
         <Card className="w-full max-w-md ">
           <CardHeader>
             <div className="relative w-full h-48 mb-4">
               <img
-                src="/placeholder.svg?height=192&width=384"
-                alt="Movie poster"
+                src={`https://image.tmdb.org/t/p/w500${currentMovie.poster_path}`}
+                alt={`movie ${currentMovie.title} image`}
                 className="absolute inset-0 w-full h-full object-cover rounded-t-lg"
               />
             </div>
-            <div>
-              <CardTitle className="text-2xl font-bold text-white">
-                Inception
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                2010 • Action, Sci-Fi • 2h 28min
-              </CardDescription>
+            <div className="flex justify-between items-center">
+              <Badge className="h-[24px] rounded-full px-6">
+                {currentMovie.genre_ids}
+              </Badge>
+              <div className="flex flex-col items-center">
+                <p className="font-semibold">
+                  <span className="text-[20px]">
+                    {currentMovie.vote_average.toFixed(1)}
+                  </span>{" "}
+                  / 10
+                </p>
+                <p className="text-[#64748B]">
+                  {currentMovie.vote_count} ratings
+                </p>
+              </div>
             </div>
+            <CardTitle>{currentMovie.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-300 mb-4">
-              A thief who enters the dreams of others to steal secrets from
-              their subconscious is offered a chance to regain his old life as
-              payment for a task considered to be impossible: "inception", the
-              implantation of another person's idea into a target's
-              subconscious.
+            <p className="text-[#64748B] select-none">
+              {currentMovie.overview}
             </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <Badge variant="secondary" className="bg-blue-900 text-blue-200">
-                Netflix
-              </Badge>
-              <Badge
-                variant="secondary"
-                className="bg-green-900 text-green-200"
-              >
-                Amazon Prime
-              </Badge>
-              <Badge variant="secondary" className="bg-red-900 text-red-200">
-                HBO Max
-              </Badge>
-            </div>
-            <div className="flex items-center space-x-2 text-gray-400">
-              <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
-              <span>8.8/10 IMDb</span>
-            </div>
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full bg-red-900 hover:bg-red-800 text-red-400 border-red-700"
+              className="rounded-full w-[40px] h-[40px] bg-[#EF4444] hover:bg-[#f95252] text-white"
+              onClick={() => {
+                handleVote("left");
+              }}
             >
-              <ThumbsDown className="h-6 w-6" />
+              <HeartOff size={16} />
               <span className="sr-only">Not Interested</span>
             </Button>
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full bg-yellow-900 hover:bg-yellow-800 text-yellow-400 border-yellow-700"
+              className="rounded-full w-[40px] h-[40px] text-white bg-gradient-to-b from-[#64CE99] to-[#50A1CF]"
+              onClick={() => {
+                handleVote("up");
+              }}
             >
-              <Star className="h-6 w-6" />
+              <Star size={16} />
               <span className="sr-only">Add to Favorites</span>
             </Button>
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full bg-green-900 hover:bg-green-800 text-green-400 border-green-700"
+              className="rounded-full w-[40px] h-[40px] text-white bg-[#487BFE]"
+              onClick={() => {
+                handleVote("right");
+              }}
             >
-              <ThumbsUp className="h-6 w-6" />
+              <CheckCheck size={16} />
               <span className="sr-only">Interested</span>
             </Button>
           </CardFooter>

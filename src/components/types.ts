@@ -14,7 +14,8 @@ export const VOTES = {
   SUPERLIKE: "superlike",
   DISLIKE: "dislike",
 } as const;
-type Vote = (typeof VOTES)[keyof typeof VOTES];
+
+export type Vote = (typeof VOTES)[keyof typeof VOTES];
 
 export type Movie = {
   adult: boolean;
