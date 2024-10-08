@@ -27,13 +27,17 @@ const page = ({ params }: { params: { room: string } }) => {
   }, []);
 
   useEffect(() => {
-    socket.on("room", (data) => {
+    socket.on("init", (data) => {
       setRoom(data.room);
       setMovies(data.movies);
     });
 
+    socket.on("pitopocho", (data) => {
+      console.log("pitopocho: ", data);
+    });
+
     return () => {
-      socket.off("room");
+      socket.off("init");
     };
   }, []);
 
