@@ -1,7 +1,7 @@
-type Props = {};
+import { redirect } from "next/navigation";
 
-const page = (props: Props) => {
-  return <div>Hola, soy duo</div>;
+export const Duo = () => {
+  return redirect(`/duo/${crypto.randomUUID()}`);
 };
 
-export default page;
+export default Duo;

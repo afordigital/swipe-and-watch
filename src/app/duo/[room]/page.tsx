@@ -45,19 +45,17 @@ const page = ({ params }: { params: { room: string } }) => {
     socket.emit("swipe", { room: roomId, userId, currentMovieId, vote });
   };
 
-  console.log(status);
-
   return (
     <main className="text-black">
       {isLoading && <p>Loading...</p>}
       {status === "WAITING" && <p>Waiting to the other person to vote...</p>}
       {!isLoading && currentMovie && status === "VOTING" && (
-        <section className="flex flex-col w-screen items-center justify-center min-h-screen p-8 pb-20 gap-[44px] sm:p-20">
+        <section className="flex flex-col w-screen h-screen items-center justify-center p-8 pb-20 gap-[44px] sm:p-20">
           <h1 className="text-[48px] font-extrabold">
             Find the best movie match
           </h1>
-          <article className="flex items-center justify-center h-full">
-            <TinderCardLayout movies={movies} vote={vote} />
+          <article className="flex-1 h-full flex items-center justify-center">
+            <TinderCardLayout movies={[currentMovie]} vote={vote} />
           </article>
           <Footer />
         </section>

@@ -52,7 +52,7 @@ export const TinderCardLayout = ({ movies, vote }: TinderCardLayoutProps) => {
   };
 
   return (
-    <div className="h-max-[650px] h-[650px] w-[500px] flex flex-col p-2 items-center justify-center">
+    <div className="h-full w-[500px] flex flex-col p-2 items-center justify-center">
       <CardSwiper
         data={mockCurrentMovies}
         // onEnter={handleEnter}
@@ -67,9 +67,7 @@ export const TinderCardLayout = ({ movies, vote }: TinderCardLayoutProps) => {
         ribbonColors={{ bgLike: "green", bgDislike: "red", textColor: "white" }}
         emptyState={
           <div className="flex flex-col items-center justify-center text-center gap-2">
-            <p>
-              You've reached the <br /> end of the list
-            </p>
+            <p>Waiting...</p>
           </div>
         }
       />
