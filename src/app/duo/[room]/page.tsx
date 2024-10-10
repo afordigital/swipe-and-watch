@@ -41,6 +41,18 @@ const page = ({ params }: { params: { room: string } }) => {
     };
   }, []);
 
+  useEffect(() => {
+    socket.on("pitopocho", (data) => {
+      setRoom((room) => {
+        if (!room) return room;
+        return {
+          ...room,
+          currentMovie: data.CURRENT_MOVIE,
+        };
+      });
+    });
+  }, []);
+
   const vote = (vote: string) => {
     socket.emit("swipe", { room: roomId, userId, currentMovieId, vote });
   };

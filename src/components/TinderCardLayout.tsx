@@ -1,8 +1,9 @@
 "use client";
 import { Movie, Vote, VOTES } from "./types";
-import { CardEnterEvent, CardEvent, CardSwiper } from "react-card-swiper";
+import { CardEvent, CardSwiper } from "react-card-swiper";
 import { TinderCardContent } from "./TinderCardContent";
 import { Direction } from "@/constants";
+import { useEffect } from "react";
 
 type TinderCardLayoutProps = {
   movies: Movie[];
@@ -39,28 +40,31 @@ export const TinderCardLayout = ({ movies, vote }: TinderCardLayoutProps) => {
     };
   });
 
+  useEffect(() => {
+    console.log(mockCurrentMovies);
+  }, [mockCurrentMovies]);
+
+  console.log(mockCurrentMovies);
+
   const handleDismiss: CardEvent = (el, meta, id, action, operation) => {
     console.log({ el, meta, id, action, operation }); // event data to be handled
   };
 
-  const handleFinish = (status: string) => {
-    console.log(status); // 'finished'
-  };
+  // const handleFinish = (status: string) => {
+  //   console.log(status); // 'finished'
 
-  const handleEnter: CardEnterEvent = (el, meta, id) => {
-    console.log(meta, id);
-  };
+  // };
 
   return (
     <div className="h-full w-[500px] flex flex-col p-2 items-center justify-center">
       <CardSwiper
         data={mockCurrentMovies}
-        // onEnter={handleEnter}
-        onFinish={handleFinish}
-        onDismiss={() => handleVote("left")}
-        // dislikeButton={<div>Left</div>}
-        // likeButton={<div>Right</div>}
-        // withActionButtons
+        // onEnter={handleDismiss}
+        // onFinish={handleFinish}
+        onDismiss={() => {
+          console.log("hola");
+          handleVote("left");
+        }}
         withRibbons
         likeRibbonText="LIKE"
         dislikeRibbonText="DISLIKE"

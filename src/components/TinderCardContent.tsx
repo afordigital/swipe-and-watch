@@ -1,13 +1,7 @@
 import { CheckCheck, HeartOff, Star } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { CardContent, CardFooter, CardTitle } from "./ui/card";
 import { Movie, Vote } from "./types";
 import { Direction } from "@/constants";
 
@@ -41,7 +35,7 @@ export const TinderCardContent = ({
         </div>
         <CardTitle>{currentMovie.title}</CardTitle>
       </div>
-      <CardContent className="">
+      <CardContent className="h-[150px] line-clamp-3 flex">
         <p className="text-[#64748B] select-none">{currentMovie.overview}</p>
       </CardContent>
       <CardFooter className="flex justify-between">
