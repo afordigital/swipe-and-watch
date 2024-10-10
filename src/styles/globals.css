@@ -116,3 +116,10 @@ body {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }
+
+
+.swipe-card__content {
+  display: flex;
+  width: 100%;
+  flex: 1;
+}

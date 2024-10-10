@@ -23,7 +23,7 @@ export const TinderCardContent = ({
   handleVote,
 }: TinderCardContentProps) => {
   return (
-    <div className="w-full max-w-md">
+    <div className="flex flex-1 flex-col">
       <div className="px-6 py-4">
         <div className="flex justify-between items-center">
           <Badge className="h-[24px] rounded-full px-6">
@@ -41,10 +41,10 @@ export const TinderCardContent = ({
         </div>
         <CardTitle>{currentMovie.title}</CardTitle>
       </div>
-      <CardContent className="">
+      <CardContent className="flex-1 flex ">
         <p className="text-[#64748B] select-none">{currentMovie.overview}</p>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between absolute bottom-0 w-full bg-gradient-to-t from-white to-transparent py-4">
         <Button
           variant="outline"
           size="icon"

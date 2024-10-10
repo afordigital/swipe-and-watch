@@ -48,19 +48,19 @@ const page = ({ params }: { params: { room: string } }) => {
   console.log(status);
 
   return (
-    <main className="text-black">
+    <main className="bg-red-300 h-screen w-full">
       {isLoading && <p>Loading...</p>}
       {status === "WAITING" && <p>Waiting to the other person to vote...</p>}
       {!isLoading && currentMovie && status === "VOTING" && (
-        <section className="flex flex-col w-screen items-center justify-center min-h-screen p-8 pb-20 gap-[44px] sm:p-20">
+        <div className="flex flex-col h-full p-5 justify-center items-center">
           <h1 className="text-[48px] font-extrabold">
             Find the best movie match
           </h1>
-          <article className="flex items-center justify-center h-full">
+          <article className="flex flex-1 items-center justify-center h-full">
             <TinderCardLayout movies={movies} vote={vote} />
           </article>
           <Footer />
-        </section>
+        </div>
       )}
     </main>
   );
