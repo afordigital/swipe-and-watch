@@ -90,3 +90,29 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+body {
+  --sb-track-color: #ffffff;
+  --sb-thumb-color: #c3c3c3;
+  --sb-size: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 6px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .custom-scrollbar {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}

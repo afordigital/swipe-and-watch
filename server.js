@@ -71,10 +71,6 @@ app.prepare().then(() => {
         },
       };
 
-      // console.log(`Votos para la película ${currentMovieId}:`, movieVotes);
-
-      // avanzar solo si es el segundo voto
-
       if (movieVotes.length > 1) {
         const currentMovieIndex = movies.findIndex(
           (movie) => movie.id === currentRoom.currentMovie

@@ -57,7 +57,7 @@ const page = ({ params }: { params: { room: string } }) => {
             Find the best movie match
           </h1>
           <article className="flex items-center justify-center h-full">
-            <TinderCardLayout currentMovie={currentMovie} vote={vote} />
+            <TinderCardLayout movies={movies} vote={vote} />
           </article>
           <Footer />
         </section>
