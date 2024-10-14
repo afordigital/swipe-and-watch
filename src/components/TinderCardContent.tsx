@@ -17,7 +17,7 @@ export const TinderCardContent = ({
   handleVote,
 }: TinderCardContentProps) => {
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full">
       <div className="px-6 py-4">
         <div className="flex justify-between items-center">
           <Badge className="h-[24px] rounded-full px-6">
