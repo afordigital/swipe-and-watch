@@ -10,7 +10,6 @@ const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
 let SWIPE_AND_WATCH_ROOMS = {};
-let CURRENT_MOVIE = 0
 
 const movies = await fetchMovies();
 
@@ -35,19 +34,20 @@ app.prepare().then(() => {
 
         SWIPE_AND_WATCH_ROOMS = {
           ...SWIPE_AND_WATCH_ROOMS,
-          [room]: { ...selectedRoom, users: [...selectedRoom.users, userId] },
+          [room]: {
+            ...selectedRoom,
+            users: [...new Set([...selectedRoom.users, userId])],
+          },
         };
       }
 
       socket.join(room);
 
-      io.to(room).emit("init", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
+      io.to(room).emit("room", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
     });
 
     socket.on("swipe", ({ room, userId, currentMovieId, vote }) => {
       const currentRoom = SWIPE_AND_WATCH_ROOMS[room];
-
-      console.log(SWIPE_AND_WATCH_ROOMS[room])
 
       if (!currentRoom) return;
 
@@ -75,32 +75,30 @@ app.prepare().then(() => {
       };
 
       if (movieVotes.length > 1) {
-        console.log('he entrado')
         const currentMovieIndex = movies.findIndex(
           (movie) => movie.id === currentRoom.currentMovie
         );
 
         if (currentMovieIndex === -1) return;
-        SWIPE_AND_WATCH_ROOMS = {
-          ...SWIPE_AND_WATCH_ROOMS,
-          [room]: {
-            ...currentRoom,
-            currentMovie: movies[currentMovieIndex + 1].id,
-          },
-        };
-        // io.to(room).emit("init", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
-        io.to(room).emit("pitopocho", {
-          room,
-          userId: currentRoom.users[0],
-          currentMovieId: currentRoom.currentMovie,
-          vote: 1,
-          CURRENT_MOVIE
-        });
+
+        const areAllVotesLikes = movieVotes.every(
+          (vote) => vote.vote === "like" || vote.vote === "superlike"
+        );
+
+        if (!areAllVotesLikes) {
+          SWIPE_AND_WATCH_ROOMS = {
+            ...SWIPE_AND_WATCH_ROOMS,
+            [room]: {
+              ...currentRoom,
+              currentMovie: movies[currentMovieIndex + 1].id,
+            },
+          };
+        }
       }
+      io.to(room).emit("room", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
     });
 
     socket.on("next", ({ room }) => {
-      console.log('entré a next')
       const currentRoom = SWIPE_AND_WATCH_ROOMS[room];
 
       if (!currentRoom) return;
@@ -116,14 +114,7 @@ app.prepare().then(() => {
           currentMovie: movies[currentMovieIndex + 1].id,
         },
       };
-      CURRENT_MOVIE ++;
-      io.to(room).emit("pitopocho", {
-        room,
-        userId: currentRoom.users[0],
-        currentMovieId: currentRoom.currentMovie,
-        vote: 1,
-        CURRENT_MOVIE
-      });
+      io.to(room).emit("room", { movies, room: SWIPE_AND_WATCH_ROOMS[room] });
     });
   });
 
