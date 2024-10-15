@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { CardContent, CardFooter, CardTitle } from "./ui/card";
 import { Movie, Vote } from "./types";
 import { Direction } from "@/constants";
+import { useGenres } from "./hooks/useGenres";
 
 type TinderCardContentProps = {
   currentMovie: Movie;
@@ -16,13 +17,27 @@ export const TinderCardContent = ({
   vote,
   handleVote,
 }: TinderCardContentProps) => {
+  const genres = useGenres();
+
+  const genreNames = currentMovie.genre_ids
+    .map((id) => genres.find((genre) => genre.id === id)?.name)
+    .filter(Boolean)
+    .join(", ");
+
+  console.log(genres);
+  console.log(genreNames);
+
   return (
     <div className="w-full">
       <div className="px-6 py-4">
         <div className="flex justify-between items-center">
-          <Badge className="h-[24px] rounded-full px-6">
-            {currentMovie.genre_ids}
-          </Badge>
+          <div className="flex gap-x-2">
+            {genreNames.split(", ").map((genre) => (
+              <Badge key={genre} className="h-[24px] rounded-full px-6">
+                {genre}
+              </Badge>
+            ))}
+          </div>
           <div className="flex flex-col items-center">
             <p className="font-semibold">
               <span className="text-[20px]">

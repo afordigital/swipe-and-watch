@@ -25,12 +25,13 @@ export default function Home() {
       <article className="flex gap-8">
         <ModeSelection
           handleMode={handleMode}
-          description="Lorem ipsum dolor sit amet consectetur. Risus luctus est eget vulputate velit laoreet aliquet. "
+          // description="Lorem ipsum dolor sit amet consectetur. Risus luctus est eget vulputate velit laoreet aliquet. "
+          description="Select this modality if you are searching what to view and want to discover new movies."
           mode={MODES.INDIVIDUAL}
         />
         <ModeSelection
           handleMode={handleMode}
-          description="Lorem ipsum dolor sit amet consectetur. Risus luctus est eget vulputate velit laoreet aliquet. "
+          description="Select this modality if you are searching what to view with someone."
           mode={MODES.DUO}
         />
       </article>

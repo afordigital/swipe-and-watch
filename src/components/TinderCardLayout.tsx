@@ -3,6 +3,7 @@ import { Movie, Vote, VOTES } from "./types";
 import { CardEvent, CardSwiper } from "react-card-swiper";
 import { TinderCardContent } from "./TinderCardContent";
 import { Direction } from "@/constants";
+import { useGenres } from "./hooks/useGenres";
 
 type TinderCardLayoutProps = {
   movie: Movie;

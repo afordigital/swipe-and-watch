@@ -122,9 +122,9 @@ const page = ({ params }: { params: { room: string } }) => {
                         ¡Congratulations, It's a match!
                       </DialogTitle>
                       <DialogDescription className="text-[#64748b] text-[14px]">
-                        Lorem ipsum dolor sit amet consectetur. Placerat nibh
-                        egestas sagittis mattis scelerisque dictum nullam. Nulla
-                        enim ut volutpat pellentesque.
+                        You've found a movie buddy! Now it's time to dive into a
+                        world of films and discover the perfect movie to watch
+                        together. Let's make movie night unforgettable!
                       </DialogDescription>
                     </DialogHeader>
 
