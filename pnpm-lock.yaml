@@ -26,6 +26,9 @@ dependencies:
   js-confetti:
     specifier: ^0.12.0
     version: 0.12.0
+  ldrs:
+    specifier: ^1.0.2
+    version: 1.0.2
   lucide-react:
     specifier: ^0.441.0
     version: 0.441.0(react@18.0.0)
@@ -50,6 +53,9 @@ dependencies:
   socket.io-client:
     specifier: ^4.7.5
     version: 4.7.5
+  sonner:
+    specifier: ^1.5.0
+    version: 1.5.0(react-dom@18.0.0)(react@18.0.0)
   tailwind-merge:
     specifier: ^2.5.2
     version: 2.5.2
@@ -2407,6 +2413,10 @@ packages:
       language-subtag-registry: 0.3.23
     dev: true
 
+  /ldrs@1.0.2:
+    resolution: {integrity: sha512-sYJmivdkIiHrUEqTrEWccBoLdaENpzbzkABI5rk8rRxTXrg9i2xVuDvUUuhOhJY3RmQyaoxs046pM1DCRdcIpg==}
+    dev: false
+
   /levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
@@ -3168,6 +3178,16 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: false
+
+  /sonner@1.5.0(react-dom@18.0.0)(react@18.0.0):
+    resolution: {integrity: sha512-FBjhG/gnnbN6FY0jaNnqZOMmB73R+5IiyYAw8yBj7L54ER7HB3fOSE5OFiQiE2iXWxeXKvg6fIP4LtVppHEdJA==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: 18.0.0
+      react-dom: 18.0.0(react@18.0.0)
     dev: false
 
   /source-map-js@1.2.1:
